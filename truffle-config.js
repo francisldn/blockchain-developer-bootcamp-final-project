@@ -13,15 +13,27 @@ module.exports = {
     rinkeby: {
       timeoutBlocks: 200000,
       networkCheckTimeout: 10000, 
-      provider: () => new HDWalletProvider(process.env.SEED_PHRASE, process.env.RINKEBY_RPC_URL),
+      provider: () => new HDWalletProvider(process.env.SEED_PHRASE, process.env.ALCHEMY_RINKEBY_URL),
       network_id: 4,
       skipDryRun: true
     },
+    mainnet_fork: {
+      host:"127.0.0.1",
+      port:8545,
+      network_id: "999"
+    },
+    mainnet: {
+      timeoutBlocks: 200000,
+      networkCheckTimeout: 10000, 
+      provider: () => new HDWalletProvider(process.env.SEED_PHRASE, process.env.MAINNET_RPC_URL),
+      network_id: 1,
+      skipDryRun: true
+    }
   },
 
   contracts_directory: './src/contracts/',
   contracts_build_directory: './src/abis',
-  migrations_directory: "./migrations",
+  migrations_directory: './migrations',
 
   compilers: {
     solc: {
@@ -33,4 +45,8 @@ module.exports = {
     }
   },
 
-};
+  mocha: {
+    useColors: true
+  }  
+
+}

@@ -280,7 +280,7 @@ function App() {
                   </div>
                   <br/>
                   <div>
-                      <button type="submit">Withdraw ETH in ERC20 Token</button>
+                      <button type="submit">Withdraw Balance in ERC20 Token</button>
                       <p>{ERC20WithdrawStatement}</p>
                   </div>
                 </form>

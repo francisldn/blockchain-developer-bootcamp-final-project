@@ -1,6 +1,6 @@
 # Design patterns
 
----------------------------------------------------------------------
+```
 >**_NOTE:_**
 Below is a list of design patterns in the Smart Contract chapter, along with a short description and the title of the lesson where it’s mentioned. To meet the requirement, you need only two of the following, documented in your design_pattern_decisions.md:
 
@@ -15,8 +15,7 @@ Access Control Design Patterns (Restricting access to certain functions using th
 Upgradable Contracts (Ways to update a deployed contract’s logic or data) Upgradable Contracts and Additional Material: Upgradable Contracts
 
 Optimizing Gas (Creating more efficient Solidity code) Optimizing Gas
----------------------------------------------------------------------
-
+```
 ## Inter-Contract Execution
 The contract interacts with 
 * Compound protocol through cETH interface to allow for deposit to earn interest

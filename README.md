@@ -61,8 +61,6 @@ SmartBank (root)
 |
 +-- test   
 |
-+-- node_modules
-|
 +-- truffle-config.js
 +-- package.json
 ```

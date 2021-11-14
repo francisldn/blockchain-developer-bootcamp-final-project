@@ -20,7 +20,8 @@ Tx.Origin Authentication
 
 The contract applies the following measures to avoid common security pitfalls:
 * Using a specific pragma compile - Solidity 0.8.0 is used
-* Use ``require`` to check sender's balances and allowances (for ERC20 tokens)
+* Use ``require`` to check sender's balances and allowances, where applicable
 * Use checks-effects-interactions in the ``withdraw`` and ``withdrawInERC20`` functions
-* Use Openzeppelin's ReentrancyGuard to safeguard against reentrancy attack
-* Pull over Push method for balance withdrawals
+* Use Openzeppelin's [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol) to safeguard against reentrancy attack
+* Use Openzeppelin's [Address](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol) library to validate ERC20 token contract addresses (eg. ``isContract`` function)
+* "Pull over Push" method for balance withdrawals

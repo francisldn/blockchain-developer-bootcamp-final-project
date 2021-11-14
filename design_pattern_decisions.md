@@ -1,6 +1,6 @@
 # Design patterns
 
->**_NOTE:_**
+>**_REQUIREMENT:_**
 ```
 Below is a list of design patterns in the Smart Contract chapter, along with a short description and the title of the lesson where it’s mentioned. To meet the requirement, you need only two of the following, documented in your design_pattern_decisions.md:
 

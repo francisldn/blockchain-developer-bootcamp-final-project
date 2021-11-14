@@ -1,8 +1,7 @@
 # Avoiding Common Attacks
 
->**_NOTE:_**
+>**_REQUIREMENT:_**
 ```
-Requirement:
 From Solidity Pitfalls and Attacks
 Using Specific Compiler Pragma 
 Proper Use of Require, Assert and Revert 

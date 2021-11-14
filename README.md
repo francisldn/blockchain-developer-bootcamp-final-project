@@ -50,21 +50,23 @@ To run the DApp in a local environment, the following dependencies are required:
   * You may also choose to interact with the SmartBank contract via [Etherscan Rinkeby.]((https://rinkeby.etherscan.io/address/0xa8A3b1D784213be8669de161165d75aF33B49504)
 
 ## Directory Structure
+```
 SmartBank (root)
-|-- migrations
++-- migrations
 |
-|-- src
-|   |-- abis
-|   |-- Component
-|   |-- contracts
-|   |-- node_modules
++-- src
+|   +-- abis
+|   +-- Component
+|   +-- contracts
+|   +-- node_modules
 |
-|-- test   
++-- test   
 |
-|-- node_modules
++-- node_modules
 |
-|-- truffle-config.js
-|-- package.json
++-- truffle-config.js
++-- package.json
+```
 
 ### Contracts
 

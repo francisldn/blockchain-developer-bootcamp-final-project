@@ -25,3 +25,4 @@ The contract applies the following measures to avoid common security pitfalls:
 * Use Openzeppelin's [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol) to safeguard against reentrancy attack
 * Use Openzeppelin's [Address](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol) library to validate ERC20 token contract addresses (eg. ``isContract`` function)
 * "Pull over Push" method for balance withdrawals
+* Include ``fallback()`` and ``receive()`` functions in the contract to receive force-sending of ETH and add the amount to the contract balances

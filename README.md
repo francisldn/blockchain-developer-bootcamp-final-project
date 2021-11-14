@@ -1,7 +1,7 @@
 
 >**_NOTE:_**
 ```
-Contain a README.md file which describes the project, describes the directory structure, and where the frontend project can be accessed (see #8). Please also include your public Ethereum account if you would like to receive your certification as an NFT (this is optional). 
+README.md file which describes the project, describes the directory structure, and where the frontend project can be accessed (see #8). Please also include your public Ethereum account if you would like to receive your certification as an NFT (this is optional). 
 
 In your README.md, be sure to have clear instructions on: 
 Installing dependencies for your project 

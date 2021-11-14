@@ -37,7 +37,7 @@ To run the DApp in a local environment, the following dependencies are required:
 * Utils
   * .env file: ``npm i -g dotenv``
 
-## How to Launch the DApp
+## How to Interact with the DApp
 * Interact through Web Interface
   * Download this folder 
   * Run ``npm install`` to install all the dependencies in the package.json file

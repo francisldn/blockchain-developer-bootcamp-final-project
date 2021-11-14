@@ -10,7 +10,7 @@ Running your smart contract unit tests and which port a local testnet should be 
 Note: This section used to require three bash scripts but has been revised.
 ```
 # About Decrypt - Your Smart CryptoCurrency Bank
-This DApp will allow users to deposit and withdraw ETH and ERC20 tokens. User deposit will earn interest from other established protocols such as Compound. Users should be aware that ERC20 tokens which are deposited will be converted into ETH and earn interest. Users can choose to withdraw the balances as ETH or any other ERC20 tokens. 
+This DApp provide token deposit and withdrawl services to users for both ETH and ERC20 tokens. User deposit will earn an interest from other established protocols such as Compound. Users should be aware that ERC20 tokens which are deposited will be converted into ETH and earn interest. Users can choose to withdraw the balances as ETH or any other ERC20 tokens. 
 
 The DApp interacts with established protocols such as Compound and Uniswap for token swaps and earning interest. It also uses Openzeppelin's contracts and libraries such as ERC20, ReentrancyGuard and Address.
 

@@ -9,7 +9,8 @@ Accessing or—if your project needs a server (not required)—running your proj
 Running your smart contract unit tests and which port a local testnet should be running on.
 Note: This section used to require three bash scripts but has been revised.
 ```
-# About Decrypt - Your Smart CryptoCurrency Bank
+# Decrypt - Your Smart CryptoCurrency Bank
+## About
 This DApp provides ETH and ERC20 tokens deposit and withdrawal services to users. User's deposit will earn an interest from other established protocols such as Compound. Users should be aware that ERC20 tokens which are deposited will be converted into ETH and earn interest. Users can choose to withdraw the balances as ETH or any other ERC20 tokens. 
 
 The DApp interacts with established protocols such as Compound and Uniswap for token swaps and earning interest. It also uses Openzeppelin contracts and libraries such as [ERC20](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/master/contracts/token/ERC20), [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol) and [Address](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol).

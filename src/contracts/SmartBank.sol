@@ -1,6 +1,6 @@
 //SPDX-License-Identifier: UNLICENSED
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.0;
 
 
 interface cETH {
@@ -32,7 +32,7 @@ interface IUniswapV2Router01 {
 }
 
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.0;
 
 interface IUniswapV2Router02 is IUniswapV2Router01 {
 
@@ -57,7 +57,7 @@ import '@openzeppelin/contracts/utils/Address.sol';
 import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.0;
 
 contract SmartBank is ReentrancyGuard {
     using Address for address;
@@ -295,6 +295,14 @@ contract SmartBank is ReentrancyGuard {
         return true;
     }
     
-    receive() external payable {}
+    receive() external payable {
+        balances[msg.sender] += msg.value;
+        totalContractBalance += msg.value;
+    }
+
+    fallback() external payable {
+        balances[msg.sender] += msg.value;
+        totalContractBalance += msg.value;
+    }
     
 }

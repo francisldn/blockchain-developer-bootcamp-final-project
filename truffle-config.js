@@ -13,7 +13,7 @@ module.exports = {
     rinkeby: {
       timeoutBlocks: 200000,
       networkCheckTimeout: 10000, 
-      provider: () => new HDWalletProvider(process.env.SEED_PHRASE, process.env.ALCHEMY_RINKEBY_URL),
+      provider: () => new HDWalletProvider(process.env.SEED_PHRASE, process.env.RINKEBY_RPC_URL),
       network_id: 4,
       skipDryRun: true
     },
@@ -31,7 +31,7 @@ module.exports = {
     }
   },
 
-  contracts_directory: './src/contracts/',
+  contracts_directory: './src/contract/',
   contracts_build_directory: './src/abis',
   migrations_directory: './migrations',
 
@@ -47,6 +47,14 @@ module.exports = {
 
   mocha: {
     useColors: true
-  }  
+  },
+
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY
+  }
 
 }

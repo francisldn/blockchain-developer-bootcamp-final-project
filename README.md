@@ -15,7 +15,7 @@ This DApp provides ETH and ERC20 tokens deposit and withdrawal services to users
 
 The DApp interacts with established protocols such as Compound and Uniswap for token swaps and earning interest. It also uses Openzeppelin contracts and libraries such as [ERC20](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/master/contracts/token/ERC20), [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol) and [Address](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol).
 
-The contract is deployed and verified on Rinkeby testnet at [0x77DA566B983157E05283AC936362A72BdF42E4a4](https://rinkeby.etherscan.io/address/0x77DA566B983157E05283AC936362A72BdF42E4a4)
+The contract is deployed and verified on Rinkeby testnet at [0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3](https://rinkeby.etherscan.io/address/0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3)
 ## Dependencies
 To run the DApp in a local environment, the following dependencies are required:
 * Node
@@ -48,7 +48,7 @@ To run the DApp in a local environment, the following dependencies are required:
   * Install Metamask in your browser. Connect your Metamask wallet and start interacting with the app
   
 * Interact via Etherscan
-  * You may also choose to interact with the SmartBank contract via [Etherscan Rinkeby.](https://rinkeby.etherscan.io/address/0x77DA566B983157E05283AC936362A72BdF42E4a4)
+  * You may also choose to interact with the SmartBank contract via [Etherscan Rinkeby.](https://rinkeby.etherscan.io/address/0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3)
 
 ## Directory Structure
 Key files and folders structures are as below:
@@ -171,5 +171,5 @@ Once run the command above, the UI will be deployed to Port:3000 which can be ac
   * install via ``npm i -g @truffle/hdwallet-provider``
 * Seed phrase and network provider (Infura or Alchemy) details are stored locally in a ``.env`` file. An example of such file is available - ``.env.example``
 ## Deployed Address and Verification
-The contract is deployed and verified on Rinkeby testnet at [0x77DA566B983157E05283AC936362A72BdF42E4a4](https://rinkeby.etherscan.io/address/0x77DA566B983157E05283AC936362A72BdF42E4a4)
+The contract is deployed and verified on Rinkeby testnet at [0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3](https://rinkeby.etherscan.io/address/0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3)
 

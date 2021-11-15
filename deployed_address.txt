@@ -1,3 +1,3 @@
 // This file contains the deployed testnet address and network where contacts have been deployed
 SmartBank contract has been deployed on Rinkeby testnet.
-Address: 0xa8A3b1D784213be8669de161165d75aF33B49504
+Address: 0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3

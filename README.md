@@ -160,7 +160,7 @@ npm run start
 ```
 Once run the command above, the UI will be deployed to Port:3000 which can be accessed via ``http://localhost:3000``
 ### Truffle Configuration
-* Truffle config file contains the network configuration for the following networks:
+* ``truffle-config.js`` contains the network configuration for the following networks:
   * development
   * Rinkeby testnet
   * Mainnet

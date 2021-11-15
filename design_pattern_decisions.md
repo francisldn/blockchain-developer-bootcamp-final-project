@@ -2,6 +2,8 @@
 
 >**_REQUIREMENT:_**
 ```
+Use at least two design patterns from the "Smart Contracts" section.
+
 Below is a list of design patterns in the Smart Contract chapter, along with a short description and the title of the lesson where it’s mentioned. To meet the requirement, you need only two of the following, documented in your design_pattern_decisions.md:
 
 Inter-Contract Execution (Calling functions in external contracts) Inter-Contract Execution, Part 1 and Part 2

@@ -160,7 +160,13 @@ truffle test --network mainnet_fork
 ```
 npm run start
 ```
-Once run the command above, the UI will be deployed to Port:3000 which can be accessed via ``http://localhost:3000``
+* Once run the command above, the UI will be deployed to Port:3000 which can be accessed via ``http://localhost:3000``
+* The front-end includes the following:
+  * Metamask wallet connect button
+  * Display the wallet account balance 
+  * Displays information from the smart contract upon interaction
+  * Allows user to submit deposit or withdraw tokens or ETH
+
 ### Truffle Configuration
 * ``truffle-config.js`` contains the network configuration for the following networks:
   * development
@@ -172,4 +178,10 @@ Once run the command above, the UI will be deployed to Port:3000 which can be ac
 * Seed phrase and network provider (Infura or Alchemy) details are stored locally in a ``.env`` file. An example of such file is available - ``.env.example``
 ## Deployed Address and Verification
 The contract is deployed and verified on Rinkeby testnet at [0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3](https://rinkeby.etherscan.io/address/0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3)
+## Screencast
 
+*Pending*
+## Ethereum account (for NFT certification)
+```
+0xb2cddF705eA6f12D7B5Da081F679305A3209Af99
+```

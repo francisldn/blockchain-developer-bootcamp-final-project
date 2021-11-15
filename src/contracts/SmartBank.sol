@@ -2,7 +2,9 @@
 
 pragma solidity 0.8.0;
 
-
+///@title Compound Ether - CToken which wraps Ether
+///@notice interface for SmartBank contract to interact with Compound
+///@dev refer to https://github.com/compound-finance/compound-protocol/blob/master/contracts/CEther.sol for further details
 interface cETH {
     
     // define functions of COMPOUND to use
@@ -15,6 +17,11 @@ interface cETH {
     function exchangeRateStored() external view returns (uint); 
     function balanceOf(address owner) external view returns (uint256 balance);
 }
+
+///@title Uniswap V2 Router01
+///@notice Uniswap interface to enable SnartBank contract to interact and swap tokens
+///@dev refer to https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router01.sol for further details
+
 interface IUniswapV2Router01 {
     function factory() external pure returns (address);
     function WETH() external pure returns (address);
@@ -59,6 +66,10 @@ import '@openzeppelin/contracts/utils/math/SafeMath.sol';
 
 pragma solidity 0.8.0;
 
+///@title SmartBank
+///@notice the contract allows users to deposit and withdraw in ETH and ERC20 tokens and earn interests
+///@author Francis_ldn
+
 contract SmartBank is ReentrancyGuard {
     using Address for address;
     using SafeMath for uint256;
@@ -74,12 +85,11 @@ contract SmartBank is ReentrancyGuard {
     }
 
     uint256 public totalContractBalance;
-    uint256 public depositAmountInETH;
-    uint256 public transferAmountERC20;
-    uint256 public depositAmountInCeth;
+    uint256 private depositAmountInETH;
+    uint256 private depositAmountInCeth;
     
-    uint256 public redeemed;
-    uint256 public erc20TokenRedeemed;
+    uint256 private redeemed;
+    uint256 private erc20TokenRedeemed;
 
     mapping(address => uint) balances;
     
@@ -88,7 +98,9 @@ contract SmartBank is ReentrancyGuard {
     event withdrawETH(address indexed depositor, uint256 amountWithdrawn);
     event withdrawERC20Token(address indexed _to, string symbol, uint256 amountWithdrawn);
 
-
+    ///@notice for user to deposit ETH to this contract and earn interest from Compound
+    ///@return true upon successful deposit of ETH
+    ///@dev due to the gas fee incurred, it is possible that the value of deposit could be slightly less than the amount deposited initially
     function addBalance() public payable returns (bool){
         // to keep track of user's ETH balance
         balances[msg.sender] = balances[msg.sender].add(msg.value);
@@ -101,60 +113,65 @@ contract SmartBank is ReentrancyGuard {
         return true;
     }
     
-    // get the total amount deposited to this contract by various users
+    ///@notice to get the total amount deposited (in Wei) to this contract by various users
+    /// ERC20 tokens deposited to this contract will be converted to ETH and added to the contract balance
     function getContractBalance() public view returns(uint256){
         return totalContractBalance;
     }
     
-    // get the total amount deposited to Compound from this contract converted to wei
+    ///@notice to get the total amount deposited to Compound from this contract converted to wei
+    ///@return total amount of CEth held by this account converted to Wei - for internal use only
     function getCompoundBalance() internal view returns(uint256) {
         return (ceth.balanceOf(address(this)).mul(ceth.exchangeRateStored())).div(1e18);
     }
     
-    // get total amount of Ceth held by this contract
+    ///@notice to get total amount of CEth held by this contract
     function getTotalCethAmount() internal view returns(uint256){
         return ceth.balanceOf(address(this));
     }
     
-    // to calculate the conversion rate between amount deposited to this contract and amount available at Compound
-    // note the decimal handling - 1e18 has to be placed in the numerator before dividing by getContractBalance
+    /// @notice to calculate the conversion rate between the amount deposited to this contract and amount available at Compound
+    /// @notice decimal handling - 1e18 has to be placed in the numerator before dividing by getContractBalance
     function conversionRateCompToContract() internal view returns (uint256)  {
         return (getCompoundBalance().mul(1e18)).div(getContractBalance());
     }
     
+    ///@notice to calculate the conversion rate between total ETH and CETH by dividing total contract balance (in Wei) by the total CETH amount
     function conversionRateContractToCeth() internal view returns (uint256) {
         return getContractBalance().div(getTotalCethAmount());
     }
     
     
-    // This function allows user to deposit ERC20 tokens to this contract
-    // This contract is formed of 3 functions - addTokens, swapExactTokensforETH and depositToCompound
-    // Upon receiving the ERC20 token, the function will swap the token into ETH on Uniswap
-    // Then, the ETH will be deposited to Compound to earn interest
-    // Due to the conversion from ERC20 token to ETH, it is possible that the value of amount in ETH could be less than the ERC20 token amount
+    ///@notice allows user to deposit ERC20 tokens to this contract
+    ///@dev This contract consists of 3 internal functions - addTokens, swapExactTokensforETH and depositToCompound
+    ///@dev Upon receiving the ERC20 token, the function will swap the token into ETH on Uniswap
+    ///@dev Then, the ETH will be deposited to Compound to earn interest
+    ///@dev Due to the conversion from ERC20 token to ETH, it is possible that the value of amount in ETH could be less than the original ERC20 token amount deposited initially
     function addBalanceERC20(address erc20TokenAddress, uint256 amountToDeposit) public payable returns (bool){
         require(erc20TokenAddress.isContract() && erc20TokenAddress != address(0),"not a valid contract address");
         require(ERC20(erc20TokenAddress).balanceOf(msg.sender)>= amountToDeposit, "insufficient amount");
         require(ERC20(erc20TokenAddress).allowance(msg.sender,address(this))>= amountToDeposit, "insufficient allowance");
         require(amountToDeposit > 0, 'Amount must be greater than zero');
         
-        // get approval outside of smart contract first before depositing tokens
+        // get approval from the token contract first before depositing tokens, otherwise this function will revert due to insufficient allowance
         addTokens(erc20TokenAddress, amountToDeposit);
         
+        // swap ERC20 token to ETH via Uniswap
         uint depositTokens = amountToDeposit;
         depositAmountInETH = swapExactTokensforETH(erc20TokenAddress, depositTokens);
 
-        // deposit amount to this contract
+        // keep track of the user balance and contract balance
         balances[msg.sender] = balances[msg.sender].add(depositAmountInETH);
         totalContractBalance = totalContractBalance.add(depositAmountInETH);
         
+        // deposit ETH amount to Compound
         depositToCompound(depositAmountInETH);
 
         emit depositERC20Token(msg.sender, ERC20(erc20TokenAddress).symbol(), amountToDeposit);
         return true;
     }
     
-    // this function allows user to deposit ETH available in this contract to Compound and then receive CETH in return
+    ///@notice this function allows user to deposit ETH available in this contract to Compound and then receive CETH in return
     function depositToCompound(uint256 amountInETH) private {
         uint256 cethBalanceBefore = ceth.balanceOf(address(this));
         ceth.mint{value: amountInETH}();
@@ -163,22 +180,22 @@ contract SmartBank is ReentrancyGuard {
     }
 
     
-    // this function enables user to deposit erc20 tokens to this contract after user has approved the amount
+    ///@notice this function enables user to deposit erc20 tokens to this contract after user has approved the amount
     function addTokens (address erc20TokenAddress, uint256 amountToDeposit) private {
-        // user will have to approve the ERC20 token amount outside of the smart contract
+        // user will have to approve the ERC20 token amount first outside of the smart contract
         uint256 depositTokens = amountToDeposit;
+        // to check the return value of ERC20 transferFrom function before proceeding
         bool success = ERC20(erc20TokenAddress).transferFrom(msg.sender, address(this), depositTokens);
         require(success, "ERC20 token deposit fails");
-        // this is added for sanity check
-        transferAmountERC20 = ERC20(erc20TokenAddress).balanceOf(address(this));
     }
     
-    // this function is to check the amount that has been approved by user
+    ///@notice to check the amount of ERC20 token that has been approved by user
+    ///@dev once amount is approved, user can start depositing ERC20 token
     function getAllowanceERC20(address erc20TokenAddress) external view returns (uint256) {
         return ERC20(erc20TokenAddress).allowance(msg.sender, address(this));
     }
     
-    // this function enables the contract to convert erc20 tokens into ETH to be deposited to Compound
+    ///@notice this function enables the contract to convert ERC20 tokens into ETH via Uniswap router
     function swapExactTokensforETH(address erc20TokenAddress, uint swapAmount) public payable returns (uint256) {
         require(erc20TokenAddress.isContract() && erc20TokenAddress != address(0), "not a valid contract address");
         require(ERC20(erc20TokenAddress).balanceOf(address(this))>0, "insufficient tokens to swap");
@@ -186,11 +203,13 @@ contract SmartBank is ReentrancyGuard {
         ERC20(erc20TokenAddress).approve(address(uniswap),swapAmount);
         uint256 allowedAmount = ERC20(erc20TokenAddress).allowance(address(this), address(uniswap));
         
-        // generate the uniswap pair path of token -> weth
+        // generate the uniswap pair path of token -> WETH
+        // WETH address is set in the constructor - varies depending on the network
         address[] memory path = new address[](2);
         path[0] = erc20TokenAddress;
         path[1] = weth;
         
+        // get the amount of ETH held in this contract before swap
         uint256 ETHBalanceBeforeSwap = address(this).balance;
         // make the swap
         uniswap.swapExactTokensForETH(
@@ -201,11 +220,15 @@ contract SmartBank is ReentrancyGuard {
             block.timestamp
         );
         
+        // get the amount of ETH held in this contract after swap
         uint256 ETHBalanceAfterSwap = address(this).balance;
+
+        // calculate the difference to get the amount of ETH deposited
         depositAmountInETH = ETHBalanceAfterSwap.sub(ETHBalanceBeforeSwap);
         return depositAmountInETH;
     }
-
+    
+    ///@notice this function enables the contract to convert ETH into an ERC20 token
     function swapExactETHForTokens(address erc20TokenAddress, uint256 swapAmountInWei) public payable returns (uint256) {
         require(erc20TokenAddress.isContract() && erc20TokenAddress != address(0), "not a valid contract address");
         require(address(this).balance>0, "insufficient ETH to swap");
@@ -214,6 +237,7 @@ contract SmartBank is ReentrancyGuard {
         path[0] = weth;
         path[1] = erc20TokenAddress;
         
+        // get the ERC20 token balance held by this contract before swap
         uint256 erc20TokenBeforeSwap = ERC20(erc20TokenAddress).balanceOf(address(this));
         uniswap.swapExactETHForTokens{value: swapAmountInWei}(
             0, // accept any amount of token
@@ -221,13 +245,19 @@ contract SmartBank is ReentrancyGuard {
             address(this),
             block.timestamp
         );
+        
+        // get the balance of ERC20 token balance held by this contract after swap
         uint256 erc20TokenAfterSwap = ERC20(erc20TokenAddress).balanceOf(address(this));
+
+        // calculate the difference to derive the amount of tokens deposited
         uint256 erc20TokenAmount = erc20TokenAfterSwap.sub(erc20TokenBeforeSwap);
         return erc20TokenAmount;
     }
     
 
-    // amount expressed in wei
+    ///@notice for user to check their ETH balance (in Wei)
+    ///@dev the amount of (user deposit + interest earned) is allocated to user proportionally to the user's initial deposit
+    ///@dev if the totalContractBalance is 0 or user balance is 0, the function will return 0
     function getBalanceInWei(address userAddress) public view returns (uint256) {
         if(totalContractBalance == 0 || balances[userAddress]==0) {
             return 0;
@@ -236,41 +266,45 @@ contract SmartBank is ReentrancyGuard {
         }
     }
     
-    // amount expressed in wei
+    ///@notice to get all the CETH balance held by this contract and convert into ETH
     function getCethBalanceInWei () internal view returns (uint256) {
         return (ceth.balanceOf(address(this)).mul(ceth.exchangeRateStored())).div(1e18);
     }
 
+    ///@notice for user to withdraw their account balance in ETH
     function withdraw(uint256 _withdrawAmountInWei) public payable nonReentrant returns(bool) {
-        // check that the withdraw amount is less than the user's balance
+        // check that the withdraw amount is less than the user balance including interest earned
         require(_withdrawAmountInWei <= getBalanceInWei(msg.sender), "overdrawn");
         
-        // convert amount to Ceth so that this contract can redeem from Compound
+        // convert withdrawal amount(Wei) to Ceth so that this contract can redeem from Compound
         uint256 amountToRedeemInCeth = ((_withdrawAmountInWei.mul(1e18)).div(conversionRateCompToContract())).div(conversionRateContractToCeth());
 
-        // record the amount before redeem
+        // record the contract ETH balance before redeem
         uint256 contractBalanceBeforeRedeem = address(this).balance;
         
         ceth.redeem(amountToRedeemInCeth);
         
-        // record the amount after redeem
+        // record the contract ETH balance after redeem
         uint256 contractBalanceAfterRedeem = address(this).balance;
         
+        // calculate the total amount redeemed in ETH terms (Wei)
         redeemed = contractBalanceAfterRedeem.sub(contractBalanceBeforeRedeem);
         
+        // if redeemed amount is greater than user initial deposit (due to interest earned), then user balance = 0
         if(redeemed> balances[msg.sender]) {
             balances[msg.sender] =0;
         } else {
             balances[msg.sender]= balances[msg.sender].sub(redeemed);
         }
         
+        // if redeemed amount is greater than total contract balance (due to interest earned), then contract balance = 0 
         if(redeemed > totalContractBalance) {
             totalContractBalance =0;
         } else {
             totalContractBalance = totalContractBalance.sub(redeemed);
         }
-        
-        
+
+        // check for return value from a low-level call        
         (bool sent,) = payable(msg.sender).call{value: redeemed}("");
         require(sent, "failed to send ether");
 
@@ -278,14 +312,16 @@ contract SmartBank is ReentrancyGuard {
         return true;
     }
     
+    ///@notice allows user to withdraw balance in a chosen ERC20 token
+    ///@dev the function has checks to ensure that ERC20 token address is a contract address and it isn't 0x0
     function withdrawInERC20 (uint _withdrawAmountInWei, address erc20TokenAddress) public payable nonReentrant returns (bool){
         require(erc20TokenAddress.isContract() && erc20TokenAddress != address(0), "not a valid contract address");
         require(_withdrawAmountInWei <= getBalanceInWei(msg.sender), "overdrawn");
         
-        // convert amount to Ceth so that this contract can redeem from Compound
+        // convert amount to Ceth so that the contract can redeem from Compound
         uint256 amountToRedeemInCeth = ((_withdrawAmountInWei.mul(1e18)).div(conversionRateCompToContract())).div(conversionRateContractToCeth());
 
-        // record the amount before redeem
+        // record the contract balance of ERC20 token amount before redeeming ETH from Compound
         uint256 contractBalanceBeforeRedeem = address(this).balance;
         
         ceth.redeem(amountToRedeemInCeth);
@@ -293,28 +329,34 @@ contract SmartBank is ReentrancyGuard {
         // record the amount after redeem
         uint256 contractBalanceAfterRedeem = address(this).balance;
         
+        // get amount of ETH redeemed
         redeemed = contractBalanceAfterRedeem.sub(contractBalanceBeforeRedeem);
         
-        // convert the amount redeemed to ERC20 token
+        // convert the amount of ETH redeemed to ERC20 token
         erc20TokenRedeemed = swapExactETHForTokens(erc20TokenAddress,redeemed);
+        
+        // if redeemed amount is greater than total user balance (due to interest earned), then user balance = 0 
         if(redeemed > balances[msg.sender]) {
             balances[msg.sender] = 0;
         } else {
             balances[msg.sender]= balances[msg.sender].sub(redeemed);
         }
-        
+
+        // if redeemed amount is greater than total contract balance (due to interest earned), then contract balance = 0 
         if(redeemed > totalContractBalance) {
             totalContractBalance =0;
         } else {
             totalContractBalance = totalContractBalance.sub(redeemed);
         }
         
+        // check return value - ERC20 token transfer function will return true if transfer is successful
         bool sent = ERC20(erc20TokenAddress).transfer(msg.sender, erc20TokenRedeemed);
         require(sent, "transfer failed");
         emit withdrawERC20Token(msg.sender, ERC20(erc20TokenAddress).symbol(), erc20TokenRedeemed);
         return true;
     }
     
+    ///@dev receive() and fallback() functions to allow the contract to receive ETH and data  
     receive() external payable {
     }
 

@@ -44,13 +44,14 @@ To run the DApp in a local environment, the following dependencies are required:
   * Launch the user interface via port: 3000 by running
   ``npm run start``
   in the SmartBank root directory
+  * Access the user interface via ``http://localhost:3000``
   * Install Metamask in your browser. Connect your Metamask wallet and start interacting with the app
   
 * Interact via Etherscan
   * You may also choose to interact with the SmartBank contract via [Etherscan Rinkeby.](https://rinkeby.etherscan.io/address/0x77DA566B983157E05283AC936362A72BdF42E4a4)
 
 ## Directory Structure
-Key documents and folder structures are as below:
+Key files and folders structures are as below:
 ```
 SmartBank (root)
 +-- migrations
@@ -115,8 +116,9 @@ truffle migration --reset --network rinkeby
   * Constructor inputs are specified in ``migrations/2_deploy_contracts.js``. More details in Migration section below.
   * Network configuration is specified in ``truffle-config.js``. More details in Truffle Configuration below.
   * HDWallet provider - install via ``npm i -g @truffle/hdwallet-provider``
+  * Network provider - create an account with Infura/Alchemy and get the provider URL
 ### Migration
-* Within Migrations folder, ``2_deploy_contracts.js`` file retrieve the contract artifacts (abi) and deploy the contract together with the addresses of the following, as required input in the constructor:
+* Within Migrations folder, ``2_deploy_contracts.js`` retrieves the contract artifacts (abi) and deploys the contract together with the addresses of the following, as required inputs in the constructor:
   * Uniswap
   * CEther
   * WETH
@@ -132,7 +134,7 @@ ganache-cli --fork https://mainnet.infura.io/v3/YOUR_API_KEY --unlock '0x7344e47
 truffle test --network mainnet_fork
 
 ```
-* ``SmartBank.test.js`` file conducts 7 tests on mainnet-fork network, as below:
+* ``SmartBank.test.js`` conducts 7 tests on mainnet-fork network, as below:
   * to verify that the contract exists, ie. should have a valid address
   * to verify that the contract should accept deposit and the amount is correct  
   * to verify that the deposit can earn interest from Compound 

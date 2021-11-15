@@ -30,12 +30,11 @@ function App() {
   const[ERC20WithdrawValue, setERC20WithdrawValue] = useState("")
   const[ERC20WithdrawStatement, setERC20WithdrawStatement] = useState("")
 
-  const contractAddress = '0x0a7395d932dcA94D1477F3a0078c7A97D847df65';
+  const contractAddress = '0x77DA566B983157E05283AC936362A72BdF42E4a4';
 
   let provider;
   let accounts;
   let contract;
-  let signer;
   let web3;
   
   async function requestAccount() {

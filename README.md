@@ -165,7 +165,8 @@ Once run the command above, the UI will be deployed to Port:3000 which can be ac
   * Rinkeby testnet
   * Mainnet
   * Mainnet_fork
-* HDwallet provider is required to connect to the Rinkeby testnet or Mainnet - install via ``npm i -g @truffle/hdwallet-provider``
+* HDwallet provider is required to connect to the Rinkeby testnet or Mainnet
+  * install via ``npm i -g @truffle/hdwallet-provider``
 * Seed phrase and network provider (Infura or Alchemy) details are stored locally in a ``.env`` file. An example of such file is available - ``.env.example``
 ## Deployed Address and Verification
 The contract is deployed and verified on Rinkeby testnet at [0x77DA566B983157E05283AC936362A72BdF42E4a4](https://rinkeby.etherscan.io/address/0x77DA566B983157E05283AC936362A72BdF42E4a4)

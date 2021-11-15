@@ -124,7 +124,7 @@ truffle migration --reset --network rinkeby
 ### Smart Contract Unit Tests
 * Before running the tests, you need to fork the mainnet and initialize the accounts, as below.
 ```
-ganache-cli --fork https://mainnet.infura.io/v3/YOUR_API_KEY --unlock 'ACCOUNT_ADDRESS_1' 'ACCOUNT_ADDRESS_2' --networkId 999
+ganache-cli --fork https://mainnet.infura.io/v3/YOUR_API_KEY --unlock '0x7344e478574acbe6dac9de1077430139e17eec3d' '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8' --networkId 999
 
 ```
 *  Once you have done the above, you can run the ``SmartBank.test.js`` tests on mainnet fork in another terminal via the command below

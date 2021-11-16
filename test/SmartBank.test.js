@@ -17,7 +17,7 @@ contract("SmartBank", function() {
     let instance;
     let accounts;
     let alice;
-    const provider =  "https://eth-mainnet.alchemyapi.io/v2/4YXMroMc0q81mOd40s3WCDHh_H3Gd5gD";
+    const provider =  "https://mainnet.infura.io/v3/28970ed5e6724c8ba34f18820a0235b3";
     let web3 = new Web3(provider);
     let dai;
     let uniswapRouter;
@@ -92,7 +92,8 @@ contract("SmartBank", function() {
    
         await instance.addBalance({from:alice_eth, value:depositAmount});
         let accountBalance = await instance.getBalanceInWei(alice_eth);
-        let amountToWithdraw = Number(accountBalance)/2;
+        // truncate the decimals - this is to deal with floating number 
+        let amountToWithdraw = Math.trunc(Number(accountBalance)/1e10)*1e10;
 
         await instance.withdraw(amountToWithdraw.toString(), {from:alice_eth});
         const remainingAmount = Number(await instance.getBalanceInWei(alice_eth));
@@ -120,9 +121,40 @@ contract("SmartBank", function() {
         const allowed = web3.utils.toBN(await instance.getAllowanceERC20(DAI_ADDRESS, {from: bob_dai}));
         await instance.addBalanceERC20(DAI_ADDRESS,allowed, {from: bob_dai});
         const accountBal = Number(await instance.getBalanceInWei(bob_dai));
-
+        
         // compare the amount by removing decimals
         assert.equal(Number.parseFloat(expectedETHDeposit/1e18).toFixed(2),Number.parseFloat(accountBal/1e18).toFixed(2))
     })
+
+    it("should allow withdrawal in ERC20 token", async() => {
+        
+        const deposit = web3.utils.toWei('1','ether');
+        await instance.addBalance({from:alice_eth, value:deposit.toString()});
+        const accountBal = Number(await instance.getBalanceInWei(alice_eth));
+        // truncate the decimals - this is to deal with floating number 
+        let amountToWithdraw = Math.trunc(Number(accountBal)/1e10)*1e10;
+
+        //get ETH/DAI exchange rate from Uniswap
+        const WETH = await uniswapRouter.WETH()
+        const daiAmount = 1e18;
+        const amounts = await uniswapRouter.getAmountsOut(daiAmount.toString(),[DAI_ADDRESS,WETH])
+        let daioutput= Number(amounts[0].toString())
+        let ethoutput = Number(amounts[1].toString())
+        let eth_dai = Number.parseFloat(daioutput/ethoutput).toFixed(2);
+        let expectedWithdrawToken = Number(deposit)*Number(eth_dai);
+
+        //record the balance before withdrawal
+        const tokenBalanceBeforeWithdraw = Number(await dai.balanceOf(alice_eth));
+        // execute withdraw function
+        await instance.withdrawInERC20(amountToWithdraw.toString(), DAI_ADDRESS.toString(), {from:alice_eth});
+        // record the balance after withdrawal
+        const tokenBalanceAfterWithdraw = Number(await dai.balanceOf(alice_eth));
+        const withdrawTokenAmt = tokenBalanceAfterWithdraw - tokenBalanceBeforeWithdraw;
+        const actualToExpected = Number(Math.max(withdrawTokenAmt,expectedWithdrawToken)/expectedWithdrawToken)
+
+        // compare the ratio of actual to expected, allowing differences at 0.5% tolerance
+        assert.isBelow(Number(actualToExpected),Number(1.005));
+    });
+    
 
 })

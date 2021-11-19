@@ -20,12 +20,13 @@ The contract is deployed and verified on the Rinkeby testnet at [0x0eaee27d1cdba
 To run the DApp in a local environment, the following dependencies are required:
 * Node v14.15.0
   * download Node: https://nodejs.org/en/download/
-* Truffle
+* Truffle v5.4.17
   * Truffle: ``npm i -g truffle``
   * HDWallet provider:  ``npm i -g @truffle/hdwallet-provider``
   * Contract verification: ``npm i -g truffle-plugin-verify``
+  * Ganache-cli: ``npm i -g ganache-cli``
 * Openzeppelin contracts and libraries: ``npm i -g @openzeppelin/contracts``
-* React
+* React 
   * React: ``npm i -g react``
   * React-bootstrap: ``npm i -g react--bootstrap``
   * Bootstrap: ``npm i -g bootstrap``
@@ -38,16 +39,20 @@ To run the DApp in a local environment, the following dependencies are required:
   * .env file: ``npm i -g dotenv``
 
 ## How to Interact with the DApp
-* Interact through Web Interface
+There are 3 ways to interact with this DApp.
+#### Interact through publicly deployed web interface
+* Go to: https://smartbank-francisldn.vercel.app
+* If you do not have a Metamask browser extension, install Metamask in your browser. Connect your Metamask wallet and start interacting with the app.
+#### Interact through local network
   * Download this folder 
   * Run ``cd smartbank``
   * Run ``npm install`` to install all the dependencies in the package.json file
-  * Launch the user interface via port: 3000 by running in the ``smartbank`` root directory
+  * Launch the user interface via port: 3000 by running the following command in the ``smartbank`` root directory
   ``npm run start``
   * Access the user interface via ``http://localhost:3000``
-  * Install Metamask in your browser. Connect your Metamask wallet and start interacting with the app
+  * If you do not have Metamask browser extension, install Metamask in your browser. Connect your Metamask wallet and start interacting with the app.
   
-* Interact via Etherscan
+#### Interact via Etherscan
   * You may also choose to interact with the SmartBank contract via [Etherscan Rinkeby.](https://rinkeby.etherscan.io/address/0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB)
 
 ## Directory Structure
@@ -65,6 +70,7 @@ SmartBank (root)
 |   +-- Component
 |   |   +-- Header.js
 |   |   +-- MetamaskConnectButton.js
+|   |   +-- Fallback.js
 |   |
 |   +-- contracts
 |   |   +-- Migrations.sol
@@ -90,7 +96,7 @@ SmartBank (root)
 * SmartBank contract is compiled using Solidity compiler 0.8.0 and consists of the following key functions:
   * addBalance 
     * Purpose: for users to deposit ETH to the contract which will earn interest from Compound
-    * Input: deposit amount (msg.value)
+    * Input: deposit amount (specified as ``msg.value``)
     * Output: emit depositETH event
   * addBalanceERC20
     * Purpose: for users to deposit ERC20 token which will then be converted to ETH and earn interest from Compound
@@ -124,17 +130,18 @@ truffle migration --reset --network rinkeby
   * WETH
 * The address inputs vary depending on the network of which the contract will be deployed (mainnet, rinkeby or development)
 ### Smart Contract Unit Tests
-* Before running the tests, you need to fork the mainnet and initialize the 2 sample accounts, as below. Please fill in ``YOUR_API_KEY`` obtained from INFURA before you run the command.
+* You need to install ``ganache-cli``(see "Dependencies" section above) to run the unit test
+* To run the unit tests, you need to fork the mainnet and initialize the 2 sample accounts below (for the purpose of using their ETH and DAI balances). Please fill in ``YOUR_API_KEY`` obtained from INFURA before you run the command below. Also make sure you have added `mainnet_fork` network to your ``truffle-config.js`` (refer to ``truffle-config.js`` file for details)
 ```
 ganache-cli --fork https://mainnet.infura.io/v3/YOUR_API_KEY --unlock '0x7344e478574acbe6dac9de1077430139e17eec3d' '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8' --networkId 999
 
 ```
-*  Once you have done the above, you can run the ``SmartBank.test.js`` tests on mainnet fork in a separate terminal via the command below
+*  Once you have done the above, open a new terminal and run the tests in ``SmartBank.test.js`` on mainnet fork in a separate terminal via the command below:
 ```
 truffle test --network mainnet_fork
 
 ```
-* ``SmartBank.test.js`` conducts 7 tests on mainnet-fork network, as below:
+* ``SmartBank.test.js`` conducts 8 unit tests, as below:
   * to verify that the contract exists, ie. should have a valid address
   * to verify that the contract should accept deposit and the amount is correct  
   * to verify that the deposit can earn interest from Compound 
@@ -142,35 +149,16 @@ truffle test --network mainnet_fork
   * to verify that the withdraw function reverts when one attempts to withdraw more than available balance
   * to verify that there is correct amount remaining after a withdrawal is made
   * to verify that the contract should accept an ERC20 token deposit
+  * to verify that the contract should allow withdrawal in ERC20 token based on dex exchange rate
 * ``exceptionsHelpers.js`` file provides the required functions for handling exceptions produced during the tests
-### User Interface
-* The user interface is built using React library with the necessary Hooks.
-* Key files relating to user interface include:
-  * In ``src`` directory:
-    * ``App.js``
-    * ``App.css``
-    * ``index.css``
-    * ``index.css``
-  * In ``src/Component`` directory:
-    * ``Header.js``
-    * ``MetamaskConnectButton.js``
-  * In ``public`` directory:
-    * ``index.html`` 
-* Download this folder from Github and then 
-```
-cd smartbank
-```
-* Run the command below in the root directory (smartbank) to initiate the user interface (UI).
-```
-npm run start
-```
-* Once run the command above, the UI will be deployed to Port:3000 which can be accessed via ``http://localhost:3000``
+### Front End 
+* The front end is built using React library with the necessary Hooks and deployed to web interface via Vercel.
 * The front-end includes the following:
   * Metamask wallet connect button
   * Display the wallet account balance 
-  * Displays information from the smart contract upon interaction
   * Allows user to submit deposit or withdraw tokens or ETH
-
+* Input validation is accounted for to provide better user experience and avoid error fallback
+* Metamask connector can detect a change of network in Metamask wallet and it will issue warning to the user that the app is only deployed on Rinkeby network
 ### Truffle Configuration
 * ``truffle-config.js`` contains the network configuration for the following networks:
   * development

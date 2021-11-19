@@ -1,3 +1,3 @@
 export const Fallback = () => {
-    return <h1>Something went wrong!</h1>
+    return <h3>Please install <a href="https://metamask.io/">metamask</a> browser extension to view this page</h3>
 }

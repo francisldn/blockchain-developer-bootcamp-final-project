@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import detectEthereumProvider from '@metamask/detect-provider';
-import { ethers } from 'ethers';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SmartBank from './abis/SmartBank.json';
 import ERC20 from './abis/ERC20.json';
@@ -12,9 +11,6 @@ import {ErrorBoundary, useErrorHandler} from 'react-error-boundary';
 import {Fallback} from './Component/Fallback'
 import Web3 from 'web3';
 
-function getLibrary(provider) {
-  return new ethers.providers.Web3Provider(provider);
-}
 
 let depositETHAmount;
 function App() {

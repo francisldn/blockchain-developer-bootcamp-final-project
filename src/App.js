@@ -458,14 +458,11 @@ function App() {
                       <input type = 'text' required value={ERC20Address} onChange={(e) => {setERC20Address(e.target.value)}} placeholder="ERC20 Address"/>
                       <p>{erc20DepositAddressError}</p>
                   </div>
-                   <br/>
                   <div>
                       <label> ERC20 Deposit Amount: </label>
                       <input type = 'text' required value={ERC20DepositValue} onChange={(e) => {setERC20DepositValue(e.target.value)}} placeholder="Example DAI: 100"/>
                       <p>{erc20DepositError}</p>
                   </div>
-         
-                  <br/>
                   <div>
                       <button name="approve" type="submit" onClick={handleERC20Approve}>Approve</button>
                       {loadingApprove? (<p>Please wait...</p>) :(<p>{ERC20ApproveStatement}</p>)}

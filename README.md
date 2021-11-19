@@ -26,10 +26,11 @@ To run the DApp in a local environment, the following dependencies are required:
   * Contract verification: ``npm i -g truffle-plugin-verify``
   * Ganache-cli: ``npm i -g ganache-cli``
 * Openzeppelin contracts and libraries: ``npm i -g @openzeppelin/contracts``
-* React 
+* Front end 
   * React: ``npm i -g react``
   * React-bootstrap: ``npm i -g react--bootstrap``
   * Bootstrap: ``npm i -g bootstrap``
+  * React Error Boundary: ``npm i -g react-error-boundary``
 * Web3
   * web3js: ``npm i -g web3``
   * ethers: ``npm i -g ethers``

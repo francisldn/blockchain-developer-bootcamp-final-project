@@ -38,8 +38,13 @@ function App() {
   const[erc20WithdrawAddressError, setERC20WithdrawAddressError] = useState("");
   const[erc20DepositAddressError, setERC20DepositAddressError] = useState("");
   const handleError = useErrorHandler();
+  const[loadingDeposit, setLoadingDeposit] = useState(false);
+  const[loadingWithdraw, setLoadingWithdraw] = useState(false);
+  const[loadingERC20Deposit, setLoadingERC20Deposit] = useState(false);
+  const[loadingApprove, setLoadingApprove] = useState(false)
+  const[loadingERC20Withdraw, setLoadingERC20Withdraw] = useState(false);
 
-  const contractAddress = '0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3';
+  const contractAddress = '0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB';
 
   let provider;
   let accounts;
@@ -72,12 +77,11 @@ function App() {
           await contract.methods.getBalanceInWei(accounts[0]).call({from:accounts[0]})
           .then((result) => {
             setDepositBalance(Math.trunc(Number(web3.utils.fromWei(result.toString()))*1e5)/1e5);
-            isNaN(depositBalance) || !depositBalance ? setViewStatement("You have a balance of 0 ETH.") : setViewStatement(`You have a balance of ${Number.parseFloat(depositBalance).toFixed(10)} ETH`)
+            isNaN(depositBalance) || !depositBalance ? setViewStatement("You have 0 ETH balance. Deposit ETH and start earning interest today.") : setViewStatement(`You have a balance of ${Number.parseFloat(depositBalance).toFixed(10)} ETH`)
           });
          
         } catch (err) {
           handleError(err);
-
           setViewStatement(`Unable to view deposit amount`);
         }
       }
@@ -93,9 +97,10 @@ function App() {
       }
     }
     
-
+    //ETH deposit
   const handleETHDepositValueChange = async (e) =>{
     e.preventDefault();
+    setLoadingDeposit(true);
     initStatement();
 
     if(typeof window.ethereum!== 'undefined'){
@@ -103,6 +108,7 @@ function App() {
       let depositAmount;
       try {
         if(isNaN(depositValue)) {
+          setLoadingDeposit(false)
           setDepositError("Please enter number only");
           return;
         } else {
@@ -121,6 +127,7 @@ function App() {
         .on('receipt', async() => {
           await contract.methods.getBalanceInWei(accounts[0]).call({from: accounts[0]})
           .then((result) => {
+            setLoadingDeposit(false)
             setDepositStatement(`You have deposited ${Number.parseFloat(depositValue).toFixed(10)} ETH`)
             setDepositBalance(Math.trunc(Number(web3.utils.fromWei(result.toString()))*1e5)/1e5);
           })
@@ -128,15 +135,19 @@ function App() {
 
       } catch (error) {
         handleError(error)
+        setLoadingDeposit(false)
         setDepositStatement(`Unable to deposit amount. Connect your wallet and try again. Make sure you have sufficient amount in your wallet.`)
       }
+      setLoadingDeposit(false)
       setDepositValue(""); 
       
     }
   }
   
+  // ETH withdraw
   const withdrawDeposit = async (e) => {
     e.preventDefault();
+    setLoadingWithdraw(true)
     initStatement();
     if(typeof window.ethereum!== 'undefined'){
       await requestAccount();
@@ -144,6 +155,7 @@ function App() {
       let withdrawAmount;
       try {
         if(isNaN(withdrawValue)) {
+          setLoadingWithdraw(false)
           setWithdrawError("Please enter number only");
           return;
           } else {
@@ -152,8 +164,9 @@ function App() {
         }
 
       } catch (error) {
-        handleError(error);
+        setWithdrawStatement(`Unable to withdraw. Make sure you have sufficient balance.`)
         console.log(error);
+        return;
       }
 
       try {
@@ -163,19 +176,24 @@ function App() {
             await contract.methods.getBalanceInWei(accounts[0]).call({from: accounts[0]})
             .then((result) =>{
               const balance = Number.parseFloat(web3.utils.fromWei(result.toString())).toFixed(10);
-              setWithdrawStatement(`You have withdrawn ${Number.parseFloat(withdrawValue).toFixed(10)} amount of ETH. You have ${Math.trunc(Number(balance)*1e5)/1e5} ETH balance remaining.`)
+              setLoadingWithdraw(false)
+              setWithdrawStatement(`You have withdrawn ${Number.parseFloat(withdrawValue).toFixed(10)} amount of ETH. You have ${Number.parseFloat(Math.trunc(Number(balance)*1e5)/1e5).toFixed(10)} ETH balance remaining.`)
             })
           });
         } catch (err) {
           console.log(err)
+          setLoadingWithdraw(false)
           setWithdrawStatement(`Unable to withdraw. Make sure you have sufficient balance.`)
         }
+        setLoadingWithdraw(false)
         setWithdrawValue("")
       }
   }
 
+  //ERC20 token deposit
   const handleERC20DepositValueChange = async (e) => {
     e.preventDefault();
+    setLoadingERC20Deposit(true)
     initStatement();
     if(typeof window.ethereum!== 'undefined'){
       await requestAccount()
@@ -185,22 +203,28 @@ function App() {
       let tokenSymbol;
       try {
         if(!validateAddress(ERC20Address)) {
+          setLoadingERC20Deposit(false)
           setERC20DepositAddressError("Please enter a valid ERC20 token address");
           return;
         } else {
           tokenContract = new web3.eth.Contract(ERC20.abi,ERC20Address.toString());    
           tokenDecimal = await tokenContract.methods.decimals().call({from:accounts[0]});
           tokenSymbol = await tokenContract.methods.symbol().call({from: accounts[0]});
+          console.log(tokenContract);
+          tokenContract ? "" : setLoadingERC20Deposit(false) && setERC20DepositStatement(`Unable to deposit amount. Make sure you have the correct ERC20 token address, sufficient token allowance and sufficient amount in your wallet.`)
           setERC20DepositAddressError("")
         }
       } catch (error) {
-        handleError(error);
+        setLoadingERC20Deposit(false)
+        setERC20DepositStatement(`Unable to deposit amount. Make sure you have the correct ERC20 token address, sufficient token allowance and sufficient amount in your wallet.`)
         console.log(error);
+        return;
       }
 
       let ERC20DepositAmount;
       try {
         if(isNaN(ERC20DepositValue)) {
+          setLoadingERC20Deposit(false)
           setERC20DepositError("Please enter number only");
           return;
         } else {
@@ -208,8 +232,10 @@ function App() {
           setERC20DepositError("")
         }
       } catch (error) {
-        handleError(error);
+        setLoadingERC20Deposit(false)
+        setERC20DepositStatement(`Unable to deposit amount. Make sure you have the correct ERC20 token address, sufficient token allowance and sufficient amount in your wallet.`)
         console.log(error);
+        return;
       }
       
       setERC20DepositStatement("");
@@ -222,6 +248,7 @@ function App() {
           .on('receipt', async()=> {
             await contract.methods.getBalanceInWei(accounts[0]).call({from: accounts[0]})
             .then((result) => {
+              setLoadingERC20Deposit(false)
               setERC20DepositStatement(`You have deposited ${ERC20DepositValue} ${tokenSymbol}`)
               setDepositBalance(Math.trunc(Number(web3.utils.fromWei(result.toString()))*1e5)/1e5);
             })
@@ -229,23 +256,31 @@ function App() {
 
       } catch (error) {
         console.log(error)
-        setERC20DepositStatement(`Unable to deposit amount. Make sure you have the correct ERC20 token address, sufficient allowance and sufficient amount in your wallet.`)
+        setLoadingERC20Deposit(false)
+        setERC20DepositStatement(`Unable to deposit amount. Make sure you have the correct ERC20 token address, sufficient token allowance and sufficient amount in your wallet.`)
+        return;
       }
+      setLoadingERC20Deposit(false)
       setERC20DepositValue("");
       setERC20Address("") 
     }
   }
 
+  //ERC20 Approve
   const handleERC20Approve = async (e) => {
     e.preventDefault();
+    setLoadingApprove(true)    
     initStatement();
     if(typeof window.ethereum!== 'undefined'){
       await requestAccount();
       let tokenContract;
       let tokenDecimal;
       let tokenSymbol;
+      
+      //validate address input
       try {
         if(!validateAddress(ERC20Address)) {
+          setLoadingApprove(false);
           setERC20DepositAddressError("Please enter a valid ERC20 token address");
           return;
         } else {
@@ -253,16 +288,20 @@ function App() {
           tokenDecimal = await tokenContract.methods.decimals().call({from:accounts[0]});
           tokenSymbol = await tokenContract.methods.symbol().call({from: accounts[0]});
           setERC20DepositAddressError("")
+          tokenContract? "": setLoadingApprove(false) && setERC20ApproveStatement(`Unable to approve amount. Make sure you have the correct ERC20 token address and sufficient balance.`)
         }
       } catch (error) {
-        handleError(error);
+        setLoadingApprove(false)
+        setERC20ApproveStatement(`Unable to approve amount. Make sure you have the correct ERC20 token address and sufficient balance.`)
         console.log(error);
         return;
       }
       
+      // validate amount input
       let ERC20DepositAmount;
       try {
         if(isNaN(ERC20DepositValue)) {
+          setLoadingApprove(false)
           setERC20DepositError("Please enter number only");
           return;
         } else {
@@ -270,8 +309,10 @@ function App() {
           setERC20DepositError("")
         }
       } catch (error) {
-        handleError(error);
+        setLoadingApprove(false)
+        setERC20ApproveStatement(`Unable to approve amount. Make sure you have the correct ERC20 token address and sufficient balance.`);
         console.log(error);
+        return;
       }
 
       setERC20DepositAddressError("")
@@ -281,18 +322,22 @@ function App() {
       try{
         await tokenContract.methods.approve(contractAddress,ERC20DepositAmount.toString()).send({from: accounts[0]})
         .on('receipt', async () => {
+          setLoadingApprove(false)
           setERC20ApproveStatement(`You have approved ${ERC20DepositValue} ${tokenSymbol}`)
         })      
       } catch (error) {
         console.log(error)
+        setLoadingApprove(false)
         setERC20ApproveStatement(`Unable to approve amount. Make sure you have the correct ERC20 token address and sufficient balance.`)
+        return;
       }
-
+      setLoadingApprove(false)
     }
   }
 
   const withdrawERC20Value = async (e) =>{
     e.preventDefault();
+    setLoadingERC20Withdraw(true)
     initStatement();
     if(typeof window.ethereum!== 'undefined'){
       await requestAccount();
@@ -302,6 +347,7 @@ function App() {
 
       try {
         if(!validateAddress(ERC20Address)) {
+          setLoadingERC20Withdraw(false)
           setERC20WithdrawAddressError("Please enter a valid ERC20 token address");
           return;
         } else {
@@ -309,36 +355,44 @@ function App() {
           tokenDecimal = await tokenContract.methods.decimals().call({from:accounts[0]});
           tokenSymbol = await tokenContract.methods.symbol().call({from: accounts[0]});
           setERC20WithdrawAddressError("")
+          tokenContract? "": setLoadingERC20Withdraw(false) && setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`)
         }
       } catch (error) {
-        handleError(error);
+        setLoadingERC20Withdraw(false)
+        setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`)
         console.log(error);
+        return;
       }
       
       let ERC20WithdrawAmount;
       try {
-        if(isNaN(ERC20DepositValue)){
+        if(isNaN(ERC20WithdrawValue)){
+          setLoadingERC20Withdraw(false);
           setERC20WithdrawError("Please enter number only");
           return;
         } else {
           ERC20WithdrawAmount = web3.utils.toBN(Number(ERC20WithdrawValue)* 10**Number(tokenDecimal));
-          setERC20WithdrawError("")
+          setERC20WithdrawError("");
         }
       } catch (error) {
-        handleError(error);
+        setLoadingERC20Withdraw(false);
+        setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`);
         console.log(error);
+        return;
       }
       
       setERC20WithdrawStatement("");
       setERC20WithdrawError("");
       setERC20WithdrawAddressError("");
-    
+      
+
       try{
       await contract.methods.withdrawInERC20(ERC20WithdrawAmount.toString(),ERC20Address.toString()).send({from: accounts[0]})
       .on('receipt', async() => {
         await contract.methods.getBalanceInWei(accounts[0]).call({from: accounts[0]})
         .then((result) => {
           const balance = Number.parseFloat(web3.utils.fromWei(result.toString())).toFixed(10);
+          setLoadingERC20Withdraw(false)
           setERC20WithdrawStatement(`You have withdrawn ${tokenSymbol} token worth ${ERC20WithdrawValue} ETH. You have ${Math.trunc(Number(balance)*1e5)/1e5} ETH balance remaining.`)
           setDepositBalance(Math.trunc(Number(web3.utils.fromWei(result.toString()))*1e5)/1e5);
         })
@@ -346,8 +400,11 @@ function App() {
 
       } catch (error) {
         console.log(error)
+        setLoadingERC20Withdraw(false)
         setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`)
+        return;
       }
+      setLoadingERC20Withdraw(false)
       setERC20WithdrawValue(""); 
       setERC20Address("");
     }
@@ -358,15 +415,16 @@ function App() {
   }
 
   return (
-      
       <div className = "App">
         <ErrorBoundary FallbackComponent={Fallback} onError={errorHandler} className ="true">  
+        
         <Header/>
         <div>
         <MetamaskConnectButton/>
         </div>
         
         <div className = "container">
+            <h4>Deposit ETH and Start Earning Interest Today! </h4>
             <button onClick = {fetchETHDepositBalance}>
               View ETH Deposit Balance
             </button>
@@ -374,10 +432,11 @@ function App() {
      
             <form onSubmit={handleETHDepositValueChange}>
               <div>
+                  
                   <label> Deposit Amount: </label>
-                  <input type = 'text' required value={depositValue} onChange={(e) => {setDepositValue(e.target.value)}} placeholder="Example ETH: 1.89"/>
+                  <input type = 'text' required value={depositValue} onChange={(e) => {setDepositValue(e.target.value)}} placeholder={"Example ETH: 1.89"}/>
                   <input type="submit" value ="Add ETH"/>
-                  <p>{depositStatement}</p>
+                  {loadingDeposit? (<p>Please wait...</p>): (<p>{depositStatement}</p>)}
                   <p>{depositError}</p>
               </div>
 
@@ -388,7 +447,7 @@ function App() {
                   <label> Withdraw Amount: </label>
                   <input type = 'text' required value={withdrawValue} onChange={(e) => {setWithdrawValue(e.target.value)}} placeholder="Example ETH: 1.89"/>
                   <input type="submit" value ="Withdraw ETH"/>
-                  <p>{withdrawStatement}</p>
+                  {loadingWithdraw? (<p>Please wait...</p>): (<p>{withdrawStatement}</p>)}
                   <p>{withdrawError}</p>
               </div>
             </form>
@@ -398,6 +457,7 @@ function App() {
             <div className = "container">
                 <form>
                   <div>
+                  <h4>Deposit Your Tokens and Start Earning Interest Today! </h4>
                       <label> ERC20 Token Address: </label>
                       <input type = 'text' required value={ERC20Address} onChange={(e) => {setERC20Address(e.target.value)}} placeholder="ERC20 Address"/>
                       <p>{erc20DepositAddressError}</p>
@@ -412,9 +472,9 @@ function App() {
                   <br/>
                   <div>
                       <button name="approve" type="submit" onClick={handleERC20Approve}>Approve</button>
-                      <p>{ERC20ApproveStatement}</p>
+                      {loadingApprove? (<p>Please wait...</p>) :(<p>{ERC20ApproveStatement}</p>)}
                       <button name="deposit" type="submit" onClick={handleERC20DepositValueChange}>Deposit ERC20 Token</button>
-                      <p>{ERC20DepositStatement}</p>
+                      {loadingERC20Deposit? (<p>Please wait...</p>): (<p>{ERC20DepositStatement}</p>)}
                       
                   </div>
                 </form>
@@ -427,18 +487,14 @@ function App() {
                       <input type = 'text' required value={ERC20Address} onChange={(e) => {setERC20Address(e.target.value)}} placeholder="ERC20 Address"/>
                       <p>{erc20WithdrawAddressError}</p>
                   </div>
-                  <p>{erc20WithdrawError}</p>
-                  <br/>
                   <div>
                       <label> Withdraw Amount (in ETH): </label>
                       <input type = 'text' required value={ERC20WithdrawValue} onChange={(e) => {setERC20WithdrawValue(e.target.value)}} placeholder="Example ETH: 1.89"/>
                       <p>{erc20WithdrawError}</p>
                   </div>
-                  <p>{erc20WithdrawError}</p>
-                  <br/>
                   <div>
                       <button type="submit">Withdraw Balance in ERC20 Token</button>
-                      <p>{ERC20WithdrawStatement}</p>
+                      {loadingERC20Withdraw ? (<p>Please wait...</p>): (<p>{ERC20WithdrawStatement}</p>)}
                   </div>
                 </form>
             </div>

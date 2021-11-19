@@ -42,7 +42,7 @@ To run the DApp in a local environment, the following dependencies are required:
 ## How to Interact with the DApp
 There are 3 ways to interact with this DApp.
 #### Interact through publicly deployed web interface
-* Go to: https://smartbank-francisldn.vercel.app
+* Go to: https://smartbank.vercel.app/
 * If you do not have a Metamask browser extension, install Metamask in your browser. Connect your Metamask wallet and start interacting with the app.
 #### Interact through local network
   * Download this folder 

@@ -10,7 +10,7 @@ const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 
 
 module.exports = async function (deployer, network) {
-  if(network === 'rinkeby' || network === 'development') {
+  if(network === 'rinkeby') {
     await deployer.deploy(SmartBank,UNISWAP_RINKEBY, COMP_RINKEBY, WETH_RINKEBY);
   } else if (network === 'mainnet' || network=== 'mainnet_fork') {
     await deployer.deploy(SmartBank,UNISWAP_MAINNET, COMP_MAINNET, WETH_MAINNET);

@@ -126,7 +126,7 @@ contract("SmartBank", function() {
         assert.equal(Number.parseFloat(expectedETHDeposit/1e18).toFixed(2),Number.parseFloat(accountBal/1e18).toFixed(2))
     })
 
-    it("should allow withdrawal in ERC20 token", async() => {
+    it("should allow withdrawal in ERC20 token based on dex exchange rate", async() => {
         
         const deposit = web3.utils.toWei('1','ether');
         await instance.addBalance({from:alice_eth, value:deposit.toString()});

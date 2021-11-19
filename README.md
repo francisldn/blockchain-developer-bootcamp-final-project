@@ -15,10 +15,10 @@ This DApp provides ETH and ERC20 tokens deposit and withdrawal services to users
 
 The DApp interacts with established protocols such as Compound and Uniswap for token swaps and earning interest. It also uses Openzeppelin contracts and libraries such as [ERC20](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/master/contracts/token/ERC20), [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol) and [Address](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol).
 
-The contract is deployed and verified on Rinkeby testnet at [0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3](https://rinkeby.etherscan.io/address/0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3)
+The contract is deployed and verified on the Rinkeby testnet at [0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB](https://rinkeby.etherscan.io/address/0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB)
 ## Dependencies
 To run the DApp in a local environment, the following dependencies are required:
-* Node
+* Node v14.15.0
   * download Node: https://nodejs.org/en/download/
 * Truffle
   * Truffle: ``npm i -g truffle``
@@ -40,15 +40,15 @@ To run the DApp in a local environment, the following dependencies are required:
 ## How to Interact with the DApp
 * Interact through Web Interface
   * Download this folder 
+  * Run ``cd smartbank``
   * Run ``npm install`` to install all the dependencies in the package.json file
-  * Launch the user interface via port: 3000 by running
+  * Launch the user interface via port: 3000 by running in the ``smartbank`` root directory
   ``npm run start``
-  in the SmartBank root directory
   * Access the user interface via ``http://localhost:3000``
   * Install Metamask in your browser. Connect your Metamask wallet and start interacting with the app
   
 * Interact via Etherscan
-  * You may also choose to interact with the SmartBank contract via [Etherscan Rinkeby.](https://rinkeby.etherscan.io/address/0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3)
+  * You may also choose to interact with the SmartBank contract via [Etherscan Rinkeby.](https://rinkeby.etherscan.io/address/0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB)
 
 ## Directory Structure
 Key files and folders structures are as below:
@@ -108,7 +108,7 @@ SmartBank (root)
     * Purpose: for users to withdraw balance from the contract in an ERC20 token; "non-Reentrant" is applied to prevent reentrancy
     * Input: withdraw amount in ETH terms, ERC20 token address
     * Output: return true on successful execution
-* You can deploy the SmartBank contract to Rinkeby network by running the following command. Make sure you have sufficient ETH balance to pay for the gas fee.
+* You can deploy the SmartBank contract to the Rinkeby network by running the following command. Make sure you have sufficient ETH balance to pay for the gas fee.
 ```
 truffle migration --reset --network rinkeby
 ```
@@ -118,13 +118,13 @@ truffle migration --reset --network rinkeby
   * HDWallet provider - install via ``npm i -g @truffle/hdwallet-provider``
   * Network provider - create an account with Infura/Alchemy and get the provider URL
 ### Migration
-* Within Migrations folder, ``2_deploy_contracts.js`` retrieves the contract artifacts (abi) and deploys the contract together with the addresses of the following, as required inputs in the constructor:
+* Within the Migrations folder, ``2_deploy_contracts.js`` retrieves the contract artifacts (abi) and deploys the contract together with the addresses of the following, as required inputs in the constructor:
   * Uniswap
   * CEther
   * WETH
 * The address inputs vary depending on the network of which the contract will be deployed (mainnet, rinkeby or development)
 ### Smart Contract Unit Tests
-* Before running the tests, you need to fork the mainnet and initialize the accounts, as below.
+* Before running the tests, you need to fork the mainnet and initialize the 2 sample accounts, as below. Please fill in ``YOUR_API_KEY`` obtained from INFURA before you run the command.
 ```
 ganache-cli --fork https://mainnet.infura.io/v3/YOUR_API_KEY --unlock '0x7344e478574acbe6dac9de1077430139e17eec3d' '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8' --networkId 999
 
@@ -144,7 +144,7 @@ truffle test --network mainnet_fork
   * to verify that the contract should accept an ERC20 token deposit
 * ``exceptionsHelpers.js`` file provides the required functions for handling exceptions produced during the tests
 ### User Interface
-* User interface is built using React library with the necessary Hooks.
+* The user interface is built using React library with the necessary Hooks.
 * Key files relating to user interface include:
   * In ``src`` directory:
     * ``App.js``
@@ -156,7 +156,11 @@ truffle test --network mainnet_fork
     * ``MetamaskConnectButton.js``
   * In ``public`` directory:
     * ``index.html`` 
-* Run the command below in the root directory (SmartBank) to initiate the user interface (UI).
+* Download this folder from Github and then 
+```
+cd smartbank
+```
+* Run the command below in the root directory (smartbank) to initiate the user interface (UI).
 ```
 npm run start
 ```
@@ -177,7 +181,7 @@ npm run start
   * install via ``npm i -g @truffle/hdwallet-provider``
 * Seed phrase and network provider (Infura or Alchemy) details are stored locally in a ``.env`` file. An example of such file is available - ``.env.example``
 ## Deployed Address and Verification
-The contract is deployed and verified on Rinkeby testnet at [0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3](https://rinkeby.etherscan.io/address/0x6E8E752A675A9CaB5A1732f18Ca7Da9B172c26c3)
+The contract is deployed and verified on Rinkeby testnet at [0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB](https://rinkeby.etherscan.io/address/0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB)
 ## Screencast
 
 *Pending*

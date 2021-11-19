@@ -98,11 +98,11 @@ SmartBank (root)
   * addBalance 
     * Purpose: for users to deposit ETH to the contract which will earn interest from Compound
     * Input: deposit amount (specified as ``msg.value``)
-    * Output: emit depositETH event
+    * Output: return true on successful execution, emit depositETH event
   * addBalanceERC20
     * Purpose: for users to deposit ERC20 token which will then be converted to ETH and earn interest from Compound
     * Input: ERC20 token address, deposit amount
-    * Output: return true on successful execution
+    * Output: return true on successful execution, emit depositERC20Token event
   * getBalanceInWei
     * Purpose: read-only function to view a user's balance in ETH terms
     * Input: user address
@@ -110,11 +110,11 @@ SmartBank (root)
   * withdraw
     * Purpose: for users to withdraw balance from the contract in ETH; "nonReentrant" is applied to prevent reentrancy
     * Input: withdraw amount
-    * Output: return true on successful execution
+    * Output: return true on successful execution, emit withdrawETH event
   * withdrawInERC20
     * Purpose: for users to withdraw balance from the contract in an ERC20 token; "non-Reentrant" is applied to prevent reentrancy
     * Input: withdraw amount in ETH terms, ERC20 token address
-    * Output: return true on successful execution
+    * Output: return true on successful execution, emit withdrawERC20Token event
 * You can deploy the SmartBank contract to the Rinkeby network by running the following command. Make sure you have sufficient ETH balance to pay for the gas fee.
 ```
 truffle migration --reset --network rinkeby

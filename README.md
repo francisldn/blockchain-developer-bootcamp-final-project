@@ -47,7 +47,7 @@ There are 3 ways to interact with this DApp.
 #### Interact through local network
   * Download this folder 
   * Run ``cd smartbank``
-  * Run ``npm install`` to install all the dependencies in the package.json file
+  * Run ``npm install`` to install all the dependencies in the ``package.json`` file
   * Launch the user interface via port: 3000 by running the following command in the ``smartbank`` root directory
   ``npm run start``
   * Access the user interface via ``http://localhost:3000``
@@ -124,6 +124,7 @@ truffle migration --reset --network rinkeby
   * Network configuration is specified in ``truffle-config.js``. More details in Truffle Configuration below.
   * HDWallet provider - install via ``npm i -g @truffle/hdwallet-provider``
   * Network provider - create an account with Infura/Alchemy and get the provider URL
+  * Fill in the .env.example file with the necessary account and network provider details 
 ### Migration
 * Within the Migrations folder, ``2_deploy_contracts.js`` retrieves the contract artifacts (abi) and deploys the contract together with the addresses of the following, as required inputs in the constructor:
   * Uniswap
@@ -153,13 +154,13 @@ truffle test --network mainnet_fork
   * to verify that the contract should allow withdrawal in ERC20 token based on dex exchange rate
 * ``exceptionsHelpers.js`` file provides the required functions for handling exceptions produced during the tests
 ### Front End 
-* The front end is built using React library with the necessary Hooks and deployed to web interface via Vercel.
+* The front-end is built using React library with the necessary Hooks and deployed to web interface via Vercel.
 * The front-end includes the following:
   * Metamask wallet connect button
   * Display the wallet account balance 
   * Allows user to submit deposit or withdraw tokens or ETH
 * Input validation is accounted for to provide better user experience and avoid error fallback
-* Metamask connector can detect a change of network in Metamask wallet and it will issue warning to the user that the app is only deployed on Rinkeby network
+* Metamask connector can detect a change of network in your Metamask wallet and the web interface will issue a warning to the user that the app is only deployed on Rinkeby network
 ### Truffle Configuration
 * ``truffle-config.js`` contains the network configuration for the following networks:
   * development

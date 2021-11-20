@@ -135,7 +135,7 @@ truffle migration --reset --network rinkeby
 * You need to install ``ganache-cli``(see "Dependencies" section above) to run the unit test
 * To run the unit tests, you need to fork the mainnet and initialize the 2 sample accounts below (for the purpose of using their ETH and DAI balances). Please fill in ``YOUR_API_KEY`` obtained from INFURA before you run the command below. Also make sure you have added `mainnet_fork` network to your ``truffle-config.js`` (refer to ``truffle-config.js`` file for details)
 ```
-ganache-cli --fork https://mainnet.infura.io/v3/28970ed5e6724c8ba34f18820a0235b3 --unlock '0x1e3D6eAb4BCF24bcD04721caA11C478a2e59852D' '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8' --networkId 999
+ganache-cli --fork https://mainnet.infura.io/v3/YOUR_API_KEY --unlock '0x1e3D6eAb4BCF24bcD04721caA11C478a2e59852D' '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8' --networkId 999
 
 ```
 *  Once you have done the above, open a new terminal and run the tests in ``SmartBank.test.js`` on mainnet fork in a separate terminal via the command below:

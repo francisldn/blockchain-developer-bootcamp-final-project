@@ -174,7 +174,7 @@ truffle test --network mainnet_fork
 The contract is deployed and verified on Rinkeby testnet at [0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB](https://rinkeby.etherscan.io/address/0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB)
 ## Screencast
 
-*Pending*
+https://www.youtube.com/watch?v=06ZhjX3d1No&t=1037s
 ## Ethereum account (for NFT certification)
 ```
 0xb2cddF705eA6f12D7B5Da081F679305A3209Af99

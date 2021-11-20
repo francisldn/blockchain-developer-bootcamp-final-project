@@ -159,7 +159,7 @@ truffle test --network mainnet_fork
   * Metamask wallet connect button
   * Display the wallet account balance 
   * Allows user to submit deposit or withdraw tokens or ETH
-* Input validation is accounted for to provide better user experience and avoid error fallback
+* Input validation to provide better user experience and avoid error fallback
 * Metamask connector can detect a change of network in your Metamask wallet and the web interface will issue a warning to the user that the app is only deployed on Rinkeby network
 ### Truffle Configuration
 * ``truffle-config.js`` contains the network configuration for the following networks:

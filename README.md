@@ -119,12 +119,18 @@ SmartBank (root)
 ```
 truffle migration --reset --network rinkeby
 ```
-* The deployment of the contract will require the following dependencies:
+* The deployment of the contract will require the following dependencies and modifications of default settings:
   * Constructor inputs are specified in ``migrations/2_deploy_contracts.js``. More details in Migration section below.
   * Network configuration is specified in ``truffle-config.js``. More details in Truffle Configuration below.
   * HDWallet provider - install via ``npm i -g @truffle/hdwallet-provider``
   * Network provider - create an account with Infura/Alchemy and get the provider URL
   * Fill in the .env.example file with the necessary account and network provider details 
+  * Due to the ``contracts`` and ``abi`` folder residing in ``src`` folder, you have to modify the default Truffle directory in ``truffle-config.js``, as below:
+  ```
+  contracts_directory: './src/contract/',
+  contracts_build_directory: './src/abis',
+  migrations_directory: './migrations'
+  ```
 ### Migration
 * Within the Migrations folder, ``2_deploy_contracts.js`` retrieves the contract artifacts (abi) and deploys the contract together with the addresses of the following, as required inputs in the constructor:
   * Uniswap
@@ -153,6 +159,7 @@ truffle test --network mainnet_fork
   * to verify that the contract should accept an ERC20 token deposit
   * to verify that the contract should allow withdrawal in ERC20 token based on dex exchange rate
 * ``exceptionsHelpers.js`` file provides the required functions for handling exceptions produced during the tests
+* Before running ``truffle test``, please ensure that you modify the default Truffle directory for ``contracts`` and ``abi`` as stated in the "Contracts" and "Truffle Configuration" section.
 ### Front End 
 * The front-end is built using React library with the necessary Hooks and deployed to web interface via Vercel.
 * The front-end includes the following:
@@ -170,6 +177,12 @@ truffle test --network mainnet_fork
 * HDwallet provider is required to connect to the Rinkeby testnet or Mainnet
   * install via ``npm i -g @truffle/hdwallet-provider``
 * Seed phrase and network provider (Infura or Alchemy) details are stored locally in a ``.env`` file. An example of such file is available - ``.env.example``
+* Due to the ``contracts`` and ``abi`` folder residing in ``src`` folder, you have to modify the default Truffle directory in ``truffle-config.js``, as below:
+  ```
+  contracts_directory: './src/contract/',
+  contracts_build_directory: './src/abis',
+  migrations_directory: './migrations'
+  ```
 ## Deployed Address and Verification
 The contract is deployed and verified on Rinkeby testnet at [0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB](https://rinkeby.etherscan.io/address/0x0eaee27d1cdbaF249dAb7B1CcBdDeAFCB5Ae86eB)
 ## Screencast

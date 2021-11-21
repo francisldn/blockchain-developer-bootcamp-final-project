@@ -22,22 +22,22 @@ To run the DApp in a local environment, the following dependencies are required:
   * download Node: https://nodejs.org/en/download/
 * Truffle v5.4.17
   * Truffle: ``npm i -g truffle``
-  * HDWallet provider:  ``npm i -g @truffle/hdwallet-provider``
-  * Contract verification: ``npm i -g truffle-plugin-verify``
-  * Ganache-cli: ``npm i -g ganache-cli``
-* Openzeppelin contracts and libraries: ``npm i -g @openzeppelin/contracts``
+  * HDWallet provider:  ``npm i @truffle/hdwallet-provider``
+  * Contract verification: ``npm i truffle-plugin-verify``
+  * Ganache-cli: ``npm i ganache-cli``
+* Openzeppelin contracts and libraries: ``npm i @openzeppelin/contracts``
 * Front end 
   * React: ``npm i -g react``
-  * React-bootstrap: ``npm i -g react--bootstrap``
-  * Bootstrap: ``npm i -g bootstrap``
-  * React Error Boundary: ``npm i -g react-error-boundary``
+  * React-bootstrap: ``npm i react--bootstrap``
+  * Bootstrap: ``npm i bootstrap``
+  * React Error Boundary: ``npm i react-error-boundary``
 * Web3
   * web3js: ``npm i -g web3``
   * ethers: ``npm i -g ethers``
-  * Metamask: ``npm i -g @metamask/detect-provider``
+  * Metamask: ``npm i @metamask/detect-provider``
   * Install metamask wallet in your browser
 * Utils
-  * .env file: ``npm i -g dotenv``
+  * .env file: ``npm i dotenv``
 
 ## How to Interact with the DApp
 There are 3 ways to interact with this DApp.

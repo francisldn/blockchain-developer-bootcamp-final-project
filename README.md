@@ -159,7 +159,7 @@ truffle test --network mainnet_fork
   * to verify that the contract should accept an ERC20 token deposit
   * to verify that the contract should allow withdrawal in ERC20 token based on dex exchange rate
 * ``exceptionsHelpers.js`` file provides the required functions for handling exceptions produced during the tests
-* Before running ``truffle test``, please ensure that you modify the default Truffle directory for ``contracts`` and ``abi`` as stated in the "Contracts" and "Truffle Configuration" section.
+* Before running ``truffle test``, please ensure that you modify the default Truffle directory for ``contracts`` and ``abi`` as stated in the "Contracts" and "Truffle Configuration" sections.
 ### Front End 
 * The front-end is built using React library with the necessary Hooks and deployed to web interface via Vercel.
 * The front-end includes the following:

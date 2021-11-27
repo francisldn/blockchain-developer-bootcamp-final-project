@@ -28,7 +28,7 @@ To run the DApp in a local environment, the following dependencies are required:
 * Openzeppelin contracts and libraries: ``npm i @openzeppelin/contracts``
 * Front end 
   * React: ``npm i -g react``
-  * React-bootstrap: ``npm i react--bootstrap``
+  * React-bootstrap: ``npm i react-bootstrap``
   * Bootstrap: ``npm i bootstrap``
   * React Error Boundary: ``npm i react-error-boundary``
 * Web3

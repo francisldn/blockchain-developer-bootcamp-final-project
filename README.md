@@ -46,9 +46,9 @@ There are 3 ways to interact with this DApp.
 * If you do not have a Metamask browser extension, install Metamask in your browser. Connect your Metamask wallet and start interacting with the app.
 #### Interact through local network
   * Download this folder 
-  * Run ``cd blockchain-developer-bootcamp-final-project-master`` which is the root folder
+  * Run ``cd blockchain-developer-bootcamp-final-project-master`` which is the root directory
   * Run ``npm install`` to install all the dependencies in the ``package.json`` file
-  * Launch the user interface via port: 3000 by running the following command in the ``smartbank`` root directory
+  * Launch the user interface via port: 3000 by running the following command in the root directory
   ``npm run start``
   * Access the user interface via ``http://localhost:3000``
   * If you do not have Metamask browser extension, install Metamask in your browser. Connect your Metamask wallet and start interacting with the app.
@@ -59,7 +59,7 @@ There are 3 ways to interact with this DApp.
 ## Directory Structure
 Key files and folders structures are as below:
 ```
-blockchain-developer-bootcamp-final-project-master (root)
+blockchain-developer-bootcamp-final-project-master (root directory)
 +-- migrations
 |   +-- 1_initial_migration.js
 |   +-- 2_deploy_contracts.js 

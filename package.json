@@ -1433,7 +1433,6 @@
     "spinnies": "^0.5.1",
     "split-string": "^3.1.0",
     "sprintf-js": "^1.0.3",
-    "sqlite3": "^4.2.0",
     "sshpk": "^1.16.1",
     "ssri": "^8.0.1",
     "stable": "^0.1.8",

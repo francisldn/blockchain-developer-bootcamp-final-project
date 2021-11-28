@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import detectEthereumProvider from '@metamask/detect-provider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SmartBank from './abis/SmartBank.json';
@@ -11,8 +11,6 @@ import {ErrorBoundary, useErrorHandler} from 'react-error-boundary';
 import {Fallback} from './Component/Fallback'
 import Web3 from 'web3';
 
-
-let depositETHAmount;
 function App() {
   // value of state, function to change the value of state
   const [depositValue, setDepositValue] = useState("");
@@ -52,6 +50,7 @@ function App() {
     web3 = new Web3(provider);
     accounts = await web3.eth.getAccounts();
     contract = new web3.eth.Contract(SmartBank.abi,contractAddress)
+    console.log(contract);
   }
 
   function initStatement() {
@@ -63,7 +62,6 @@ function App() {
     setERC20WithdrawStatement("")
   }
 
-  let balance;
   async function fetchETHDepositBalance() {
     initStatement();
 
@@ -85,6 +83,7 @@ function App() {
 
     function validateAddress(address) {
       try {
+        // eslint-disable-next-line
         const addr = web3.utils.toChecksumAddress(address);
         return true;
       } catch(error) {
@@ -206,9 +205,10 @@ function App() {
           tokenContract = new web3.eth.Contract(ERC20.abi,ERC20Address.toString());    
           tokenDecimal = await tokenContract.methods.decimals().call({from:accounts[0]});
           tokenSymbol = await tokenContract.methods.symbol().call({from: accounts[0]});
-          console.log(tokenContract);
-          tokenContract ? "" : setLoadingERC20Deposit(false) && setERC20DepositStatement(`Unable to deposit amount. Make sure you have the correct ERC20 token address, sufficient token allowance and sufficient amount in your wallet.`)
-          setERC20DepositAddressError("")
+          if(!tokenContract) {
+            setLoadingERC20Deposit(false); 
+            setERC20DepositStatement(`Unable to deposit amount. Make sure you have the correct ERC20 token address, sufficient token allowance and sufficient amount in your wallet.`);
+          }
         }
       } catch (error) {
         setLoadingERC20Deposit(false)
@@ -284,7 +284,10 @@ function App() {
           tokenDecimal = await tokenContract.methods.decimals().call({from:accounts[0]});
           tokenSymbol = await tokenContract.methods.symbol().call({from: accounts[0]});
           setERC20DepositAddressError("")
-          tokenContract? "": setLoadingApprove(false) && setERC20ApproveStatement(`Unable to approve amount. Make sure you have the correct ERC20 token address and sufficient balance.`)
+          if(!tokenContract) {
+          setLoadingApprove(false); 
+          setERC20ApproveStatement(`Unable to approve amount. Make sure you have the correct ERC20 token address and sufficient balance.`);
+          }
         }
       } catch (error) {
         setLoadingApprove(false)
@@ -350,12 +353,15 @@ function App() {
           tokenContract = new web3.eth.Contract(ERC20.abi,ERC20Address.toString());
           tokenDecimal = await tokenContract.methods.decimals().call({from:accounts[0]});
           tokenSymbol = await tokenContract.methods.symbol().call({from: accounts[0]});
-          setERC20WithdrawAddressError("")
-          tokenContract? "": setLoadingERC20Withdraw(false) && setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`)
+          setERC20WithdrawAddressError("");
+          if(!tokenContract) {
+            setLoadingERC20Withdraw(false); 
+            setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`);
+          }
         }
       } catch (error) {
         setLoadingERC20Withdraw(false)
-        setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`)
+        //setERC20WithdrawStatement(`Unable to withdraw. Make sure you have the correct ERC20 token address and sufficient balance.`)
         console.log(error);
         return;
       }

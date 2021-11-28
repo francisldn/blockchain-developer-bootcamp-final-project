@@ -102,9 +102,9 @@ function App() {
       await requestAccount();
       let depositAmount;
       try {
-        if(isNaN(depositValue)) {
+        if(isNaN(depositValue) || depositValue<=0) {
           setLoadingDeposit(false)
-          setDepositError("Please enter number only");
+          setDepositError("Please enter a positive number only");
           return;
         } else {
           depositAmount = web3.utils.toWei(depositValue, 'ether');
@@ -149,7 +149,7 @@ function App() {
       
       let withdrawAmount;
       try {
-        if(isNaN(withdrawValue)) {
+        if(isNaN(withdrawValue) || withdrawValue<=0) {
           setLoadingWithdraw(false)
           setWithdrawError("Please enter number only");
           return;
@@ -299,7 +299,7 @@ function App() {
       // validate amount input
       let ERC20DepositAmount;
       try {
-        if(isNaN(ERC20DepositValue)) {
+        if(isNaN(ERC20DepositValue) || ERC20DepositValue <=0) {
           setLoadingApprove(false)
           setERC20DepositError("Please enter number only");
           return;
@@ -368,7 +368,7 @@ function App() {
       
       let ERC20WithdrawAmount;
       try {
-        if(isNaN(ERC20WithdrawValue)){
+        if(isNaN(ERC20WithdrawValue) || ERC20WithdrawValue<=0){
           setLoadingERC20Withdraw(false);
           setERC20WithdrawError("Please enter number only");
           return;

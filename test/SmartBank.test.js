@@ -17,7 +17,7 @@ contract("SmartBank", function() {
     let instance;
     let accounts;
     let alice;
-    const provider =  "https://mainnet.infura.io/v3/28970ed5e6724c8ba34f18820a0235b3";
+    const provider =  process.env.MAINNET_RPC_URL;
     let web3 = new Web3(provider);
     let dai;
     let uniswapRouter;

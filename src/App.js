@@ -418,7 +418,7 @@ function App() {
 
   return (
       <div className = "App">
-        <ErrorBoundary FallbackComponent={Fallback} onError={errorHandler} className ="true">  
+        <ErrorBoundary FallbackComponent={Fallback} onError={errorHandler}>  
         
         <Header/>
         <div>
@@ -445,7 +445,7 @@ function App() {
             </form>
 
             <form onSubmit={withdrawDeposit}>
-              <div className>
+              <div>
                   <label> Withdraw Amount: </label>
                   <input type = 'text' required value={withdrawValue} onChange={(e) => {setWithdrawValue(e.target.value)}} placeholder="Example ETH: 1.89"/>
                   <input type="submit" value ="Withdraw ETH"/>

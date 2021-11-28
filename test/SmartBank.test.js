@@ -17,6 +17,7 @@ contract("SmartBank", function() {
     let instance;
     let accounts;
     let alice;
+    // to change to your own Infura provider URL
     const provider =  process.env.MAINNET_RPC_URL;
     let web3 = new Web3(provider);
     let dai;

@@ -24,12 +24,13 @@ contract("SmartBank", function() {
     beforeEach(async() => {
         // fork mainnet and use 2 of the accounts from mainnet
         alice_eth = '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8'
-        bob_dai = '0x7344E478574aCBe6DaC9dE1077430139E17EEc3D'
+        bob_dai = '0x1e3D6eAb4BCF24bcD04721caA11C478a2e59852D'
         instance = await SmartBank.new(UNISWAP_MAINNET, COMP_MAINNET, WETH_MAINNET);
         dai = await IERC20.at(DAI_ADDRESS);
         uniswapRouter = await IUniswapRouter.at(UNISWAP_MAINNET);
     });
 
+    //1st test
     it("should have an address", async() => {
         assert.notEqual(instance.address, '');
         assert.notEqual(instance.address, null);
@@ -37,6 +38,7 @@ contract("SmartBank", function() {
         assert.notEqual(instance.address, 0x0)
     });    
 
+    //2nd test
     it("should deposit correct amount", async() => {   
         const deposit = web3.utils.toWei('1','ether');
         await instance.addBalance({from:alice_eth, value:deposit});
@@ -45,6 +47,7 @@ contract("SmartBank", function() {
         assert.equal(Number.parseFloat(deposit/1e18).toFixed(2),accountBalance);
     });
 
+    //3rd test
     it("deposit can earn interest from Compound", async() => {
         const deposit1 = web3.utils.toWei('1','ether');
         const deposit2 = web3.utils.toWei('1','ether');
@@ -66,6 +69,7 @@ contract("SmartBank", function() {
         assert.isAbove(interest, 0);
     })
 
+    //4th test
     it("should emit the appropriate event when a deposit is made", async() => {
         const deposit = web3.utils.toWei('1','ether');
         let result = await instance.addBalance({from:alice_eth, value:deposit});
@@ -77,6 +81,7 @@ contract("SmartBank", function() {
         assert.equal(deposit, amountDeposit)
     })
 
+    //5th test
     it("should revert on attempt to withdraw more than available amount", async() => {
         const depositAmount = web3.utils.toWei('1','ether');
         //deposit 1 ether
@@ -87,13 +92,14 @@ contract("SmartBank", function() {
         await catchRevert(instance.withdraw(withdrawAmount,{from:alice_eth}))
     })
 
+    //6th test
     it("should have the correct remaining amount after a withdrawal is made", async() => {
         const depositAmount = web3.utils.toWei('1','ether');
    
         await instance.addBalance({from:alice_eth, value:depositAmount});
         let accountBalance = await instance.getBalanceInWei(alice_eth);
         // truncate the decimals - this is to deal with floating number 
-        let amountToWithdraw = Math.trunc(Number(accountBalance)/1e10)*1e10;
+        let amountToWithdraw = Math.trunc(Number(accountBalance)/1e15)*1e15;
 
         await instance.withdraw(amountToWithdraw.toString(), {from:alice_eth});
         const remainingAmount = Number(await instance.getBalanceInWei(alice_eth));
@@ -102,6 +108,7 @@ contract("SmartBank", function() {
         assert.equal(Number.parseFloat(expectedAmountRemaining/1e18).toFixed(2), Number.parseFloat(remainingAmount/1e18).toFixed(2));
     })
 
+    //7th test
     it("should accept ERC20 token deposit", async() => {
         const daiDeposit = web3.utils.toWei('10000','ether');
 
@@ -126,6 +133,7 @@ contract("SmartBank", function() {
         assert.equal(Number.parseFloat(expectedETHDeposit/1e18).toFixed(2),Number.parseFloat(accountBal/1e18).toFixed(2))
     })
 
+    //8th test
     it("should allow withdrawal in ERC20 token based on dex exchange rate", async() => {
         
         const deposit = web3.utils.toWei('1','ether');

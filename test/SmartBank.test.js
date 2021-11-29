@@ -18,7 +18,7 @@ contract("SmartBank", function() {
     let accounts;
     let alice;
     // to change to your own Infura provider URL
-    const provider =  process.env.MAINNET_RPC_URL;
+    const provider =  'https://mainnet.infura.io/v3/85a90f73f7794d79a0689382745635af';
     let web3 = new Web3(provider);
     let dai;
     let uniswapRouter;

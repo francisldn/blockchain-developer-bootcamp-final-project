@@ -139,8 +139,8 @@ truffle migration --reset --network rinkeby
 * The address inputs vary depending on the network of which the contract will be deployed (mainnet, rinkeby or development)
 ### Smart Contract Unit Tests
 * You need to install ``ganache-cli``(see "Dependencies" section above) to run the unit test
-* In the ``SmartBank.test.js`` file, on line 21, you need to supply your own ``MAINNET_RPC_URL`` pointing to the mainnet to initialise web3 as the test requires forking mainnet. 
-* To run the unit tests, you need to fork the mainnet and initialize the 2 sample accounts below (for the purpose of using their ETH and DAI balances). Please fill in ``YOUR_API_KEY`` obtained from INFURA before you run the command below. Also make sure you have added `mainnet_fork` network to your ``truffle-config.js`` (refer to ``truffle-config.js`` file for details)
+* In the ``SmartBank.test.js`` file, on line 21, you need to supply your own ``MAINNET_RPC_URL`` pointing to the mainnet to initialise web3 as the test requires forking mainnet. [Note: Infura ID has been provided in the test file to facilitate testing, it will be deleted after the project completion.]
+* To run the unit tests, you need to fork the mainnet and initialize the 2 sample accounts below (for the purpose of using their ETH and DAI balances). Note that Infura ID has been provided below to facilitate testing, it will be deleted after the project completion. Also make sure you have added `mainnet_fork` network to your ``truffle-config.js`` (refer to ``truffle-config.js`` file for details)
 ```
 ganache-cli --fork https://mainnet.infura.io/v3/85a90f73f7794d79a0689382745635af --unlock '0x1e3D6eAb4BCF24bcD04721caA11C478a2e59852D' '0xEA674fdDe714fd979de3EdF0F56AA9716B898ec8' --networkId 999
 
